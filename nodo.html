@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="theme-color" content="#F5F0E8">
+<title>NODO — Tu información, siempre contigo.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500&family=DM+Serif+Display&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #F5F0E8;
+    --bg2: #EDE7DC;
+    --bg3: #E4DDD1;
+    --text: #1C1917;
+    --text2: #6B6560;
+    --text3: #A09990;
+    --border: rgba(28,25,23,0.12);
+    --border2: rgba(28,25,23,0.22);
+    --accent: #C8B89A;
+    --accent-dark: #9A7A56;
+    --danger-bg: #FAECE7;
+    --danger: #8B3220;
+    --warn-bg: #FDF3E3;
+    --warn: #7A4A0A;
+    --ok-bg: #EAF3DE;
+    --ok: #3B6D11;
+    --pend-bg: #FDF3E3;
+    --pend: #7A4A0A;
+    --radius: 14px;
+    --radius-sm: 8px;
+    --shadow: 0 1px 3px rgba(0,0,0,0.06);
+  }
+
+  html, body {
+    height: 100%;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .app {
+    max-width: 430px;
+    margin: 0 auto;
+    min-height: 100vh;
+    background: var(--bg);
+    position: relative;
+  }
+
+  .screen {
+    display: none;
+    flex-direction: column;
+    min-height: 100vh;
+    animation: fadeIn 0.18s ease;
+  }
+  .screen.active { display: flex; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(6px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ── TOP BAR ── */
+  .top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 20px 12px;
+    border-bottom: 0.5px solid var(--border);
+    position: sticky;
+    top: 0;
+    background: var(--bg);
+    z-index: 10;
+  }
+  .logo-text {
+    font-family: 'DM Serif Display', serif;
+    font-size: 17px;
+    letter-spacing: 0.05em;
+    color: var(--text);
+  }
+  .logo-text small {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: var(--text2);
+    letter-spacing: 0;
+    margin-left: 6px;
+  }
+  .back-btn {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text2);
+    font-size: 20px;
+    padding: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+  }
+  .back-btn svg { width: 18px; height: 18px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  .lang-toggle { display: flex; gap: 4px; }
+  .lang-btn {
+    font-size: 11px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    padding: 3px 9px;
+    border: 0.5px solid var(--border2);
+    border-radius: 20px;
+    background: transparent;
+    cursor: pointer;
+    color: var(--text2);
+    letter-spacing: 0.04em;
+    transition: all 0.12s;
+  }
+  .lang-btn.active {
+    background: var(--text);
+    color: var(--bg);
+    border-color: var(--text);
+  }
+
+  /* ── SCROLL ── */
+  .scroll-content { flex: 1; overflow-y: auto; padding-bottom: 100px; }
+
+  /* ── ACTION BAR ── */
+  .action-bar {
+    padding: 12px 20px 24px;
+    border-top: 0.5px solid var(--border);
+    display: flex;
+    gap: 10px;
+    background: var(--bg);
+    position: sticky;
+    bottom: 0;
+  }
+  .btn-primary {
+    flex: 1;
+    padding: 12px;
+    background: var(--text);
+    color: var(--bg);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 500;
+    cursor: pointer;
+    letter-spacing: 0.02em;
+    transition: opacity 0.12s;
+  }
+  .btn-primary:active { opacity: 0.8; }
+  .btn-secondary {
+    flex: 1;
+    padding: 12px;
+    background: transparent;
+    color: var(--text);
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    cursor: pointer;
+    transition: background 0.12s;
+  }
+  .btn-secondary:active { background: var(--bg2); }
+  .btn-full { width: 100%; flex: none; }
+
+  /* ── WELCOME ── */
+  .hero {
+    padding: 40px 24px 28px;
+    text-align: center;
+  }
+  .hero-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 52px;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    line-height: 1;
+    margin-bottom: 8px;
+  }
+  .hero-tag {
+    font-size: 14px;
+    color: var(--text2);
+    letter-spacing: 0.01em;
+  }
+  .chip-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 24px;
+    background: var(--bg2);
+    border: 0.5px solid var(--border);
+    border-radius: 30px;
+    padding: 7px 14px;
+    font-size: 12px;
+    color: var(--text2);
+  }
+  .chip-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.85); }
+  }
+
+  .profile-section { padding: 8px 20px 32px; }
+  .section-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0 0 10px;
+  }
+  .profile-card {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 16px 18px;
+    border: 0.5px solid var(--border);
+    border-radius: var(--radius);
+    background: var(--bg);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+    margin-bottom: 10px;
+  }
+  .profile-card:hover { border-color: var(--border2); background: var(--bg2); }
+  .profile-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+  .icon-patient { background: #EDE3D8; }
+  .icon-doctor  { background: #DDE4ED; }
+  .profile-icon svg { width: 20px; height: 20px; stroke-width: 1.8; fill: none; }
+  .icon-patient svg { stroke: #7A5838; }
+  .icon-doctor  svg { stroke: #3A5A7A; }
+  .profile-info { flex: 1; }
+  .profile-info h3 { font-size: 15px; font-weight: 500; color: var(--text); margin-bottom: 2px; }
+  .profile-info p  { font-size: 12px; color: var(--text2); }
+  .chevron { color: var(--text3); margin-left: auto; }
+  .chevron svg { width: 16px; height: 16px; stroke: currentColor; fill: none; stroke-width: 2; }
+
+  /* ── PATIENT HEADER ── */
+  .patient-header {
+    padding: 20px;
+    background: var(--bg2);
+    border-bottom: 0.5px solid var(--border);
+  }
+  .avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: 500;
+    color: #4A3520;
+    margin-bottom: 10px;
+    letter-spacing: 0.04em;
+  }
+  .patient-name-lg { font-size: 19px; font-weight: 500; color: var(--text); }
+  .patient-meta    { font-size: 12px; color: var(--text2); margin-top: 2px; }
+
+  .badges { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+  .badge {
+    font-size: 11px;
+    font-weight: 500;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: 0.02em;
+  }
+  .badge-blood { background: var(--danger-bg); color: var(--danger); }
+  .badge-cond  { background: var(--bg3); color: var(--text2); border: 0.5px solid var(--border); }
+  .badge-warn  { background: var(--warn-bg); color: var(--warn); }
+
+  /* ── INFO BLOCKS ── */
+  .info-block { padding: 16px 20px; border-bottom: 0.5px solid var(--border); }
+  .block-title {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 5px 0;
+    font-size: 13px;
+  }
+  .info-row .lbl { color: var(--text2); }
+  .info-row .val { font-weight: 500; color: var(--text); text-align: right; max-width: 58%; }
+  .info-row .val-sm { font-size: 11px; font-weight: 500; color: var(--text); }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--bg2);
+    color: var(--text2);
+    border: 0.5px solid var(--border);
+  }
+  .tag-danger { background: var(--danger-bg); color: var(--danger); border-color: #F5C4B3; }
+  .tag-warn   { background: var(--warn-bg);   color: var(--warn);   border-color: #F5D9A0; }
+
+  .sublabel { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+
+  /* ── MEDS ── */
+  .med-item {
+    display: flex;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .med-item:last-child { border-bottom: none; }
+  .med-dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent);
+    margin-top: 6px;
+    flex-shrink: 0;
+  }
+  .med-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .med-dose { font-size: 12px; color: var(--text2); margin-top: 1px; }
+
+  /* ── VACCINATION ── */
+  .vacc-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 7px 0;
+    font-size: 13px;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .vacc-item:last-child { border-bottom: none; }
+  .vacc-lbl { color: var(--text); }
+  .vacc-status { font-size: 11px; padding: 3px 9px; border-radius: 20px; font-weight: 500; }
+  .vacc-ok   { background: var(--ok-bg);   color: var(--ok);   }
+  .vacc-pend { background: var(--pend-bg); color: var(--pend); }
+
+  /* ── DOCTOR TABS ── */
+  .doc-tabs {
+    display: flex;
+    padding: 0 20px;
+    border-bottom: 0.5px solid var(--border);
+    overflow-x: auto;
+    gap: 0;
+    background: var(--bg);
+    position: sticky;
+    top: 57px;
+    z-index: 9;
+  }
+  .doc-tabs::-webkit-scrollbar { display: none; }
+  .doc-tab {
+    font-size: 12px;
+    font-family: 'DM Sans', sans-serif;
+    padding: 10px 14px;
+    cursor: pointer;
+    color: var(--text2);
+    border-bottom: 2px solid transparent;
+    white-space: nowrap;
+    transition: color 0.12s;
+  }
+  .doc-tab.active {
+    color: var(--text);
+    border-bottom-color: var(--text);
+    font-weight: 500;
+  }
+
+  /* ── EVOLUTION ── */
+  .evo-item {
+    padding: 12px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .evo-item:last-child { border-bottom: none; }
+  .evo-date   { font-size: 11px; color: var(--text3); margin-bottom: 4px; }
+  .evo-text   { font-size: 13px; color: var(--text); line-height: 1.5; }
+  .evo-doctor { font-size: 11px; color: var(--text2); margin-top: 4px; }
+
+  /* ── STUDIES ── */
+  .study-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 11px 0;
+    border-bottom: 0.5px solid var(--border);
+    cursor: pointer;
+  }
+  .study-item:last-child { border-bottom: none; }
+  .study-icon {
+    width: 38px; height: 38px;
+    border-radius: var(--radius-sm);
+    background: var(--bg2);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+  .study-icon svg { width: 18px; height: 18px; stroke: var(--text3); fill: none; stroke-width: 1.8; }
+  .study-name { font-size: 13px; font-weight: 500; color: var(--text); }
+  .study-date { font-size: 11px; color: var(--text2); margin-top: 1px; }
+  .study-arrow { margin-left: auto; }
+  .study-arrow svg { width: 14px; height: 14px; stroke: var(--text3); fill: none; stroke-width: 2; }
+
+  /* ── PLAN ── */
+  .plan-item {
+    display: flex;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 0.5px solid var(--border);
+  }
+  .plan-item:last-child { border-bottom: none; }
+  .plan-num {
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    border: 0.5px solid var(--border2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text2);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .plan-text { font-size: 13px; color: var(--text); }
+  .plan-date { font-size: 11px; color: var(--text2); margin-top: 2px; }
+
+  /* ── FORM ── */
+  .form-wrap { padding: 16px 20px; }
+  .field-label { font-size: 11px; color: var(--text2); margin-bottom: 5px; letter-spacing: 0.04em; }
+  .field-input {
+    width: 100%;
+    padding: 10px 12px;
+    border: 0.5px solid var(--border2);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin-bottom: 14px;
+    outline: none;
+    transition: border-color 0.12s;
+  }
+  .field-input:focus { border-color: var(--accent-dark); }
+  textarea.field-input { height: 90px; resize: none; }
+
+  /* ── SHARE ── */
+  .share-avatar {
+    width: 76px; height: 76px;
+    border-radius: 50%;
+    background: #EDE3D8;
+    margin: 0 auto 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'DM Serif Display', serif;
+    font-size: 26px;
+    color: var(--accent-dark);
+  }
+  .critical-card {
+    background: var(--bg2);
+    border-radius: var(--radius);
+    padding: 16px;
+    margin-bottom: 16px;
+    border: 0.5px solid var(--border);
+  }
+  .critical-title {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+
+  /* ── UTILS ── */
+  .spacer-8  { height: 8px; }
+  .spacer-16 { height: 16px; }
+  .spacer-24 { height: 24px; }
+  .text-center { text-align: center; }
+  .val-danger { color: var(--danger) !important; }
+
+  /* ── FOOTER NOTE ── */
+  .nodo-footer {
+    text-align: center;
+    padding: 20px;
+    font-size: 11px;
+    color: var(--text3);
+    letter-spacing: 0.05em;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- ═══════════════════════════════
+     BIENVENIDA
+═══════════════════════════════ -->
+<div class="screen active" id="screen-welcome">
+  <div class="top-bar">
+    <span class="logo-text">NODO</span>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <div class="hero">
+    <div class="hero-logo">NODO</div>
+    <div class="hero-tag" data-es="Tu información, siempre contigo." data-en="Your information, always with you.">Tu información, siempre contigo.</div>
+    <div class="chip-indicator">
+      <div class="chip-dot"></div>
+      <span data-es="Chip NFC · Cecilia Barragán" data-en="NFC chip · Cecilia Barragán">Chip NFC · Cecilia Barragán</span>
+    </div>
+  </div>
+
+  <div class="profile-section">
+    <div class="section-label" data-es="Continuar como" data-en="Continue as">Continuar como</div>
+
+    <div class="profile-card" onclick="goTo('screen-patient')">
+      <div class="profile-icon icon-patient">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 20c0-4 3.6-7 8-7s8 3 8 7"/></svg>
+      </div>
+      <div class="profile-info">
+        <h3 data-es="Paciente" data-en="Patient">Paciente</h3>
+        <p data-es="Ver y compartir tu información de salud" data-en="View and share your health information">Ver y compartir tu información de salud</p>
+      </div>
+      <div class="chevron"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div>
+
+    <div class="profile-card" onclick="goTo('screen-doctor')">
+      <div class="profile-icon icon-doctor">
+        <svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 1 0 0 10A5 5 0 0 0 12 2z"/><path d="M2 20c0-4 4-7 10-7s10 3 10 7"/><path d="M17 13v4m-2-2h4"/></svg>
+      </div>
+      <div class="profile-info">
+        <h3 data-es="Médico / Cuidador" data-en="Doctor / Caregiver">Médico / Cuidador</h3>
+        <p data-es="Revisar historial y actualizar expediente" data-en="Review history and update record">Revisar historial y actualizar expediente</p>
+      </div>
+      <div class="chevron"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+    </div>
+  </div>
+
+  <div class="nodo-footer">NODO · Joyería como interfaz de cuidado · Mariana Navarro Ávila</div>
+</div>
+
+<!-- ═══════════════════════════════
+     VISTA PACIENTE
+═══════════════════════════════ -->
+<div class="screen" id="screen-patient">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('screen-welcome')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span data-es="Inicio" data-en="Home">Inicio</span>
+    </button>
+    <span class="logo-text">NODO</span>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <div class="scroll-content">
+    <div class="patient-header">
+      <div class="avatar">CB</div>
+      <div class="patient-name-lg">Cecilia Barragán</div>
+      <div class="patient-meta" data-es="75 años · Ciudad de México" data-en="75 years old · Mexico City">75 años · Ciudad de México</div>
+      <div class="badges">
+        <span class="badge badge-blood">O+</span>
+        <span class="badge badge-cond" data-es="Artritis reumatoide" data-en="Rheumatoid arthritis">Artritis reumatoide</span>
+        <span class="badge badge-warn" data-es="⚠ Alergia: Penicilina" data-en="⚠ Allergy: Penicillin">⚠ Alergia: Penicilina</span>
+      </div>
+    </div>
+
+    <div class="info-block">
+      <div class="block-title" data-es="Datos generales" data-en="General data">Datos generales</div>
+      <div class="info-row"><span class="lbl" data-es="Peso" data-en="Weight">Peso</span><span class="val">62 kg</span></div>
+      <div class="info-row"><span class="lbl" data-es="Estatura" data-en="Height">Estatura</span><span class="val">1.60 m</span></div>
+      <div class="info-row"><span class="lbl" data-es="Tipo de sangre" data-en="Blood type">Tipo de sangre</span><span class="val">O positivo</span></div>
+      <div class="info-row"><span class="lbl">CURP</span><span class="val-sm">BARC490312MDFRRN09</span></div>
+    </div>
+
+    <div class="info-block">
+      <div class="block-title" data-es="Medicamentos actuales" data-en="Current medications">Medicamentos actuales</div>
+      <div class="med-item"><div class="med-dot"></div><div><div class="med-name">Metotrexato</div><div class="med-dose" data-es="7.5 mg · 1 vez por semana (lunes)" data-en="7.5 mg · once a week (Monday)">7.5 mg · 1 vez por semana (lunes)</div></div></div>
+      <div class="med-item"><div class="med-dot"></div><div><div class="med-name">Ácido fólico</div><div class="med-dose" data-es="5 mg · diario" data-en="5 mg · daily">5 mg · diario</div></div></div>
+      <div class="med-item"><div class="med-dot"></div><div><div class="med-name">Calcio + Vitamina D</div><div class="med-dose" data-es="600 mg · 2 veces al día" data-en="600 mg · twice a day">600 mg · 2 veces al día</div></div></div>
+    </div>
+
+    <div class="info-block">
+      <div class="block-title" data-es="Alergias y padecimientos" data-en="Allergies and conditions">Alergias y padecimientos</div>
+      <div class="sublabel" data-es="Alergias" data-en="Allergies">Alergias</div>
+      <div class="tag-list" style="margin-bottom:12px"><span class="tag tag-danger">Penicilina</span><span class="tag tag-danger">Ibuprofeno</span></div>
+      <div class="sublabel" data-es="Padecimientos" data-en="Conditions">Padecimientos</div>
+      <div class="tag-list"><span class="tag tag-warn" data-es="Artritis reumatoide" data-en="Rheumatoid arthritis">Artritis reumatoide</span><span class="tag tag-warn" data-es="Osteoporosis leve" data-en="Mild osteoporosis">Osteoporosis leve</span></div>
+    </div>
+
+    <div class="info-block">
+      <div class="block-title" data-es="Cartilla de vacunación" data-en="Vaccination record">Cartilla de vacunación</div>
+      <div class="vacc-item"><span class="vacc-lbl" data-es="Influenza (2024)" data-en="Influenza (2024)">Influenza (2024)</span><span class="vacc-status vacc-ok" data-es="Aplicada" data-en="Administered">Aplicada</span></div>
+      <div class="vacc-item"><span class="vacc-lbl">COVID-19 (Refuerzo)</span><span class="vacc-status vacc-ok" data-es="Aplicada" data-en="Administered">Aplicada</span></div>
+      <div class="vacc-item"><span class="vacc-lbl" data-es="Neumococo" data-en="Pneumococcus">Neumococo</span><span class="vacc-status vacc-pend" data-es="Pendiente" data-en="Pending">Pendiente</span></div>
+      <div class="vacc-item"><span class="vacc-lbl">Tétanos / Td</span><span class="vacc-status vacc-ok" data-es="Aplicada" data-en="Administered">Aplicada</span></div>
+    </div>
+
+    <div class="info-block">
+      <div class="block-title" data-es="Contacto de emergencia" data-en="Emergency contact">Contacto de emergencia</div>
+      <div class="info-row"><span class="lbl" data-es="Nombre" data-en="Name">Nombre</span><span class="val">Mariana Barragán</span></div>
+      <div class="info-row"><span class="lbl" data-es="Relación" data-en="Relation">Relación</span><span class="val" data-es="Hija" data-en="Daughter">Hija</span></div>
+      <div class="info-row"><span class="lbl" data-es="Teléfono" data-en="Phone">Teléfono</span><span class="val">+52 55 1234 5678</span></div>
+    </div>
+
+    <div class="spacer-16"></div>
+  </div>
+
+  <div class="action-bar">
+    <button class="btn-secondary" onclick="goTo('screen-welcome')" data-es="Inicio" data-en="Home">Inicio</button>
+    <button class="btn-primary"   onclick="goTo('screen-share')"   data-es="Compartir ficha" data-en="Share profile">Compartir ficha</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     VISTA MÉDICO
+═══════════════════════════════ -->
+<div class="screen" id="screen-doctor">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('screen-welcome')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span data-es="Inicio" data-en="Home">Inicio</span>
+    </button>
+    <span class="logo-text">NODO <small data-es="Vista médico" data-en="Doctor view">Vista médico</small></span>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <div class="doc-tabs">
+    <div class="doc-tab active" onclick="switchTab('t-overview')" data-es="Resumen" data-en="Overview">Resumen</div>
+    <div class="doc-tab" onclick="switchTab('t-evolution')" data-es="Evolución" data-en="Evolution">Evolución</div>
+    <div class="doc-tab" onclick="switchTab('t-studies')"   data-es="Estudios"  data-en="Studies">Estudios</div>
+    <div class="doc-tab" onclick="switchTab('t-plan')"      data-es="Plan"      data-en="Plan">Plan</div>
+  </div>
+
+  <div class="scroll-content">
+
+    <!-- Resumen -->
+    <div id="t-overview">
+      <div class="patient-header">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div class="avatar">CB</div>
+          <div>
+            <div class="patient-name-lg">Cecilia Barragán</div>
+            <div class="patient-meta" data-es="75 años · O+ · Última visita: 12 mar 2026" data-en="75 years old · O+ · Last visit: Mar 12, 2026">75 años · O+ · Última visita: 12 mar 2026</div>
+          </div>
+        </div>
+        <div class="badges" style="margin-top:12px">
+          <span class="badge badge-warn" data-es="⚠ Alergia: Penicilina, Ibuprofeno" data-en="⚠ Allergy: Penicillin, Ibuprofen">⚠ Alergia: Penicilina, Ibuprofeno</span>
+        </div>
+      </div>
+      <div class="info-block">
+        <div class="block-title" data-es="Signos y medidas" data-en="Signs and measures">Signos y medidas</div>
+        <div class="info-row"><span class="lbl" data-es="Peso" data-en="Weight">Peso</span><span class="val">62 kg</span></div>
+        <div class="info-row"><span class="lbl" data-es="Estatura" data-en="Height">Estatura</span><span class="val">1.60 m</span></div>
+        <div class="info-row"><span class="lbl">IMC</span><span class="val">24.2</span></div>
+        <div class="info-row"><span class="lbl" data-es="Presión arterial (última)" data-en="Blood pressure (last)">Presión arterial (última)</span><span class="val">120/80 mmHg</span></div>
+      </div>
+      <div class="info-block">
+        <div class="block-title" data-es="Diagnósticos activos" data-en="Active diagnoses">Diagnósticos activos</div>
+        <div class="tag-list">
+          <span class="tag tag-warn" data-es="Artritis reumatoide" data-en="Rheumatoid arthritis">Artritis reumatoide</span>
+          <span class="tag tag-warn" data-es="Osteoporosis leve" data-en="Mild osteoporosis">Osteoporosis leve</span>
+        </div>
+      </div>
+      <div class="info-block">
+        <div class="block-title" data-es="Medicamentos" data-en="Medications">Medicamentos</div>
+        <div class="med-item"><div class="med-dot"></div><div><div class="med-name">Metotrexato</div><div class="med-dose" data-es="7.5 mg · semanal" data-en="7.5 mg · weekly">7.5 mg · semanal</div></div></div>
+        <div class="med-item"><div class="med-dot"></div><div><div class="med-name">Ácido fólico</div><div class="med-dose" data-es="5 mg · diario" data-en="5 mg · daily">5 mg · diario</div></div></div>
+        <div class="med-item"><div class="med-dot"></div><div><div class="med-name">Calcio + Vitamina D</div><div class="med-dose" data-es="600 mg · 2x día" data-en="600 mg · 2x day">600 mg · 2x día</div></div></div>
+      </div>
+    </div>
+
+    <!-- Evolución -->
+    <div id="t-evolution" style="display:none">
+      <div class="info-block">
+        <div class="block-title" data-es="Notas de evolución" data-en="Evolution notes">Notas de evolución</div>
+        <div class="evo-item">
+          <div class="evo-date">12 mar 2026</div>
+          <div class="evo-text" data-es="Mejoría en movilidad de manos. Se ajusta dosis de Metotrexato a 7.5 mg. Continúa con suplementación de calcio." data-en="Improved hand mobility. Methotrexate adjusted to 7.5 mg. Calcium supplementation continues.">Mejoría en movilidad de manos. Se ajusta dosis de Metotrexato a 7.5 mg. Continúa con suplementación de calcio.</div>
+          <div class="evo-doctor">Dr. Hernández — Reumatología</div>
+        </div>
+        <div class="evo-item">
+          <div class="evo-date">15 ene 2026</div>
+          <div class="evo-text" data-es="Dolor articular persistente en muñecas y rodillas. Se solicita perfil bioquímico. Sin cambios en medicación." data-en="Persistent joint pain in wrists and knees. Biochemical profile requested. No medication changes.">Dolor articular persistente en muñecas y rodillas. Se solicita perfil bioquímico. Sin cambios en medicación.</div>
+          <div class="evo-doctor">Dr. Hernández — Reumatología</div>
+        </div>
+        <div class="evo-item">
+          <div class="evo-date">08 oct 2025</div>
+          <div class="evo-text" data-es="Primer diagnóstico de osteoporosis leve. Se agrega Calcio + Vitamina D al esquema." data-en="First diagnosis of mild osteoporosis. Calcium + Vitamin D added to regimen.">Primer diagnóstico de osteoporosis leve. Se agrega Calcio + Vitamina D al esquema.</div>
+          <div class="evo-doctor">Dra. López — Geriatría</div>
+        </div>
+      </div>
+      <div style="padding:0 20px 8px">
+        <button class="btn-primary btn-full" onclick="goTo('screen-new-note')" data-es="+ Agregar nota de evolución" data-en="+ Add evolution note">+ Agregar nota de evolución</button>
+      </div>
+    </div>
+
+    <!-- Estudios -->
+    <div id="t-studies" style="display:none">
+      <div class="info-block">
+        <div class="block-title" data-es="Resultados de estudios" data-en="Study results">Resultados de estudios</div>
+        <div class="study-item">
+          <div class="study-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></div>
+          <div><div class="study-name" data-es="Perfil bioquímico completo" data-en="Complete biochemical profile">Perfil bioquímico completo</div><div class="study-date">Feb 2026</div></div>
+          <div class="study-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="study-item">
+          <div class="study-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></div>
+          <div><div class="study-name" data-es="Densitometría ósea" data-en="Bone densitometry">Densitometría ósea</div><div class="study-date">Oct 2025</div></div>
+          <div class="study-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="study-item">
+          <div class="study-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></div>
+          <div><div class="study-name" data-es="Rx manos bilateral" data-en="Bilateral hand X-ray">Rx manos bilateral</div><div class="study-date">Sep 2025</div></div>
+          <div class="study-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+        <div class="study-item">
+          <div class="study-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="9" y1="13" x2="15" y2="13"/><line x1="9" y1="17" x2="12" y2="17"/></svg></div>
+          <div><div class="study-name" data-es="Biometría hemática" data-en="Blood count">Biometría hemática</div><div class="study-date">Ene 2026</div></div>
+          <div class="study-arrow"><svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg></div>
+        </div>
+      </div>
+      <div style="padding:0 20px 8px">
+        <button class="btn-secondary btn-full" data-es="↑ Subir nuevo estudio" data-en="↑ Upload new study">↑ Subir nuevo estudio</button>
+      </div>
+    </div>
+
+    <!-- Plan -->
+    <div id="t-plan" style="display:none">
+      <div class="info-block">
+        <div class="block-title" data-es="Plan de trabajo" data-en="Work plan">Plan de trabajo</div>
+        <div class="plan-item"><div class="plan-num">1</div><div><div class="plan-text" data-es="Cita de seguimiento reumatología" data-en="Rheumatology follow-up">Cita de seguimiento reumatología</div><div class="plan-date" data-es="Jun 2026 — Dr. Hernández" data-en="Jun 2026 — Dr. Hernández">Jun 2026 — Dr. Hernández</div></div></div>
+        <div class="plan-item"><div class="plan-num">2</div><div><div class="plan-text" data-es="Vacuna neumococo pendiente" data-en="Pending pneumococcus vaccine">Vacuna neumococo pendiente</div><div class="plan-date" data-es="Antes de may 2026" data-en="Before May 2026">Antes de may 2026</div></div></div>
+        <div class="plan-item"><div class="plan-num">3</div><div><div class="plan-text" data-es="Repetir perfil bioquímico" data-en="Repeat biochemical profile">Repetir perfil bioquímico</div><div class="plan-date">Ago 2026</div></div></div>
+        <div class="plan-item"><div class="plan-num">4</div><div><div class="plan-text" data-es="Evaluar ajuste de dosis Metotrexato" data-en="Evaluate Methotrexate dose adjustment">Evaluar ajuste de dosis Metotrexato</div><div class="plan-date" data-es="Próxima consulta" data-en="Next appointment">Próxima consulta</div></div></div>
+        <div class="plan-item"><div class="plan-num">5</div><div><div class="plan-text" data-es="Densitometría ósea de control" data-en="Control bone densitometry">Densitometría ósea de control</div><div class="plan-date">Oct 2026</div></div></div>
+      </div>
+      <div style="padding:0 20px 8px">
+        <button class="btn-primary btn-full" data-es="+ Agregar tarea al plan" data-en="+ Add task to plan">+ Agregar tarea al plan</button>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="action-bar">
+    <button class="btn-secondary" onclick="goTo('screen-welcome')" data-es="Inicio" data-en="Home">Inicio</button>
+    <button class="btn-primary"   onclick="goTo('screen-new-note')" data-es="Actualizar expediente" data-en="Update record">Actualizar expediente</button>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     NUEVA NOTA
+═══════════════════════════════ -->
+<div class="screen" id="screen-new-note">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('screen-doctor')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span data-es="Expediente" data-en="Record">Expediente</span>
+    </button>
+    <span class="logo-text" data-es="Nueva nota" data-en="New note">Nueva nota</span>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <div class="scroll-content">
+    <div class="form-wrap">
+      <div style="font-size:13px;color:var(--text2);margin-bottom:18px" data-es="Cecilia Barragán · 75 años" data-en="Cecilia Barragán · 75 years old">Cecilia Barragán · 75 años</div>
+
+      <div class="field-label" data-es="Fecha de consulta" data-en="Consultation date">Fecha de consulta</div>
+      <input class="field-input" type="date" value="2026-05-07">
+
+      <div class="field-label" data-es="Especialidad / Médico" data-en="Specialty / Doctor">Especialidad / Médico</div>
+      <input class="field-input" type="text" placeholder="Ej. Reumatología — Dr. Hernández">
+
+      <div class="field-label" data-es="Nota de evolución" data-en="Evolution note">Nota de evolución</div>
+      <textarea class="field-input" placeholder="Describe la evolución del paciente..."></textarea>
+
+      <div class="field-label" data-es="Modificar medicamentos" data-en="Modify medications">Modificar medicamentos</div>
+      <input class="field-input" type="text" placeholder="Ej. Metotrexato 10 mg · semanal">
+
+      <div class="field-label" data-es="Próxima cita" data-en="Next appointment">Próxima cita</div>
+      <input class="field-input" type="text" placeholder="Ej. Jun 2026 — Reumatología">
+
+      <div class="field-label" data-es="Estudios solicitados" data-en="Studies requested">Estudios solicitados</div>
+      <input class="field-input" type="text" placeholder="Ej. Biometría hemática, perfil renal">
+
+      <div class="spacer-8"></div>
+      <button class="btn-primary btn-full" onclick="goTo('screen-doctor')" data-es="Guardar nota" data-en="Save note">Guardar nota</button>
+      <div class="spacer-8"></div>
+      <button class="btn-secondary btn-full" onclick="goTo('screen-doctor')" data-es="Cancelar" data-en="Cancel">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════════
+     COMPARTIR FICHA
+═══════════════════════════════ -->
+<div class="screen" id="screen-share">
+  <div class="top-bar">
+    <button class="back-btn" onclick="goTo('screen-patient')">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+      <span data-es="Volver" data-en="Back">Volver</span>
+    </button>
+    <span class="logo-text" data-es="Compartir ficha" data-en="Share profile">Compartir ficha</span>
+    <div class="lang-toggle">
+      <button class="lang-btn active" onclick="setLang('es')">ES</button>
+      <button class="lang-btn" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+
+  <div class="scroll-content" style="padding:28px 20px">
+    <div class="text-center" style="margin-bottom:24px">
+      <div class="share-avatar">CB</div>
+      <div style="font-size:17px;font-weight:500">Cecilia Barragán</div>
+      <div style="font-size:12px;color:var(--text2);margin-top:3px" data-es="Ficha de emergencia" data-en="Emergency profile">Ficha de emergencia</div>
+    </div>
+
+    <div class="critical-card">
+      <div class="critical-title" data-es="Información crítica" data-en="Critical information">Información crítica</div>
+      <div class="info-row"><span class="lbl" data-es="Tipo de sangre" data-en="Blood type">Tipo de sangre</span><span class="val val-danger">O+</span></div>
+      <div class="info-row"><span class="lbl" data-es="Alergias" data-en="Allergies">Alergias</span><span class="val val-danger">Penicilina, Ibuprofeno</span></div>
+      <div class="info-row"><span class="lbl" data-es="Contacto" data-en="Contact">Contacto</span><span class="val">+52 55 1234 5678</span></div>
+    </div>
+
+    <button class="btn-primary btn-full" style="margin-bottom:10px" data-es="Compartir enlace" data-en="Share link">Compartir enlace</button>
+    <button class="btn-secondary btn-full" data-es="Generar código QR" data-en="Generate QR code">Generar código QR</button>
+  </div>
+</div>
+
+</div>
+
+<script>
+let lang = 'es';
+
+function goTo(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+function setLang(l) {
+  lang = l;
+  document.querySelectorAll('[data-es]').forEach(el => {
+    const val = l === 'es' ? el.dataset.es : el.dataset.en;
+    if (val) el.textContent = val;
+  });
+  document.querySelectorAll('.lang-btn').forEach(btn => {
+    btn.classList.toggle('active', btn.textContent.trim() === l.toUpperCase());
+  });
+}
+
+function switchTab(tabId) {
+  const tabs = ['t-overview', 't-evolution', 't-studies', 't-plan'];
+  tabs.forEach(t => {
+    document.getElementById(t).style.display = t === tabId ? 'block' : 'none';
+  });
+  document.querySelectorAll('.doc-tab').forEach((el, i) => {
+    el.classList.toggle('active', tabs[i] === tabId);
+  });
+}
+</script>
+</body>
+</html>
